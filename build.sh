@@ -1,13 +1,16 @@
 #! /bin/bash
-set -x
+#set -x
 
 ### Config
-PackagesToInstall=( zip unzip doxygen libX11-devel libGL-devel libXrandr-devel libXinerama-devel )
+PackagesToInstall=( zip unzip doxygen libX11-devel libGL-devel libXrandr-devel libXinerama-devel libXcursor-devel mesa-libGLU-devel openssl-devel xerces-c-devel cuda )
 WorkPackages=( patch )
 ScriptDir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 BuildDir="$(readlink -f "${1:-/opt/opticks_stuff}" )"
 PatchFile="$ScriptDir"/opticks.patch
 ProfileFile="$BuildDir"/profile.sh
+Geant4Home=/opt/geant/Geant4-10.3.3-Linux/
+ClhepHome=/opt/clhep/
+OptixHome=/opt/NVIDIA-OptiX-SDK-4.1.1-linux64/
 
 #### Run things
 
@@ -29,6 +32,11 @@ fi
 # Setup the environment
 cat > "$ProfileFile" <<"EOF"
 export OPTICKS_HOME="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"/opticks   
+#export OPTICKS_GEANT4_HOME="/opt/geant/Geant4-10.3.3-Linux/"
+#export OPTICKS_CLHEP_HOME="/opt/clhep/"
+export OPTICKS_OPTIX_HOME="/opt"
+export OPTICKS_CAPABILITY=30
+
 opticks-(){ . $OPTICKS_HOME/opticks.bash && opticks-env $* ; }                  
 export LOCAL_BASE=/usr/local                                                    
                                                                                 
@@ -39,6 +47,15 @@ export PATH=$LOCAL_BASE/opticks/lib:$OPTICKS_HOME/bin:$PATH
 EOF
 source "$ProfileFile"
 
+# Need to set up things for the externals that opticks doesn't provide
+ln -s "$OptixHome" /opt/Optix
+
 # Run the opticks installation process
 opticks-
+
+opticks-configure -DOptiX_INSTALL_DIR=/opt/Optix
+#                  -DCUDA_TOOLKIT_ROOT_DIR=/Developer/NVIDIA/CUDA-7.0 \
+#                  -DCOMPUTE_CAPABILITY=52 \
+#                  -DBOOST_ROOT=$(boost-prefix)
+
 opticks-full
