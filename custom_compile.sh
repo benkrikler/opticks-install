@@ -40,7 +40,7 @@ echo "===\nBuild Oticks\n==="
 #opticks-- () { 
 (
     cd $(opticks-bdir);
-    cmake --build . --config $(opticks-config-type) -- -j8
+    cmake --build . --config $(opticks-config-type) -target install -- -j8
 )
 
 echo "===\nPrepare install cache\n==="

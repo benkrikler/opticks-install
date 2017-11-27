@@ -55,7 +55,7 @@ source "$ProfileFile"
 ln -s "$OptixHome" /opt/Optix
 
 # Run the opticks installation process
-if [ -n "$CustomBuild" ];then
+if [ -z "$CustomBuild" ];then
 	opticks-
 
 	opticks-configure -DOptiX_INSTALL_DIR=/opt/Optix
