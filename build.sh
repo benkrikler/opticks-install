@@ -4,8 +4,12 @@
 ### Config
 PackagesToInstall=( zip unzip doxygen libX11-devel libGL-devel libXrandr-devel libXinerama-devel libXcursor-devel mesa-libGLU-devel openssl-devel xerces-c-devel cuda )
 WorkPackages=( patch )
+
 ScriptDir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 BuildDir="$(readlink -f "${1:-/opt/opticks_stuff}" )"
+#CustomBuild="$2"
+CustomBuild="$ScriptDir/custom_compile.sh"
+
 PatchFile="$ScriptDir"/opticks.patch
 ProfileFile="$BuildDir"/profile.sh
 Geant4Home=/opt/geant/Geant4-10.3.3-Linux/
@@ -51,11 +55,15 @@ source "$ProfileFile"
 ln -s "$OptixHome" /opt/Optix
 
 # Run the opticks installation process
-opticks-
+if [ -n "$CustomBuild" ];then
+	opticks-
 
-opticks-configure -DOptiX_INSTALL_DIR=/opt/Optix
-#                  -DCUDA_TOOLKIT_ROOT_DIR=/Developer/NVIDIA/CUDA-7.0 \
-#                  -DCOMPUTE_CAPABILITY=52 \
-#                  -DBOOST_ROOT=$(boost-prefix)
+	opticks-configure -DOptiX_INSTALL_DIR=/opt/Optix
+	#                  -DCUDA_TOOLKIT_ROOT_DIR=/Developer/NVIDIA/CUDA-7.0 \
+	#                  -DCOMPUTE_CAPABILITY=52 \
+	#                  -DBOOST_ROOT=$(boost-prefix)
 
-opticks-full
+	opticks-full
+else
+	"$CustomBuild" "$ProfileFile"
+fi
