@@ -29,7 +29,7 @@ hg clone http://bitbucket.org/simoncblyth/opticks
 if [ -f "$PatchFile" ];then
     ( 
     cd opticks
-    patch -p 1 < "$PatchFile"
+    patch -N -p 1 < "$PatchFile"
     )
 fi
 
