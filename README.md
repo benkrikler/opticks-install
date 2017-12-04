@@ -11,5 +11,5 @@ docker run --runtime=nvidia -v $PWD:/work -ti kreczko/optix-build
 Run the build script
 ```
 cd /work
-./build.sh
+./build.sh 2>&1 |tee /tmp/build_log.txt
 ```

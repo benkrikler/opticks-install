@@ -2,7 +2,7 @@
 #set -x
 
 ### Config
-PackagesToInstall=( zip unzip doxygen libX11-devel libGL-devel libXrandr-devel libXinerama-devel libXcursor-devel mesa-libGLU-devel openssl-devel xerces-c-devel cuda )
+PackagesToInstall=( zip unzip doxygen libX11-devel libGL-devel libXrandr-devel libXinerama-devel libXcursor-devel mesa-libGLU-devel openssl-devel xerces-c-devel )
 WorkPackages=( patch )
 
 ScriptDir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
@@ -36,7 +36,7 @@ fi
 # Setup the environment
 cat > "$ProfileFile" <<"EOF"
 export OPTICKS_HOME="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"/opticks   
-#export OPTICKS_GEANT4_HOME="/opt/geant/Geant4-10.3.3-Linux/"
+export OPTICKS_GEANT4_HOME="/opt/geant/Geant4-10.3.3-Linux/"
 #export OPTICKS_CLHEP_HOME="/opt/clhep/"
 export OPTICKS_OPTIX_HOME="/opt"
 export OPTICKS_CAPABILITY=30
@@ -53,6 +53,7 @@ source "$ProfileFile"
 
 # Need to set up things for the externals that opticks doesn't provide
 ln -s "$OptixHome" /opt/Optix
+ln -s "/usr/local/cuda-9.0/" "/usr/local/cuda-9.0.176/"
 
 # Run the opticks installation process
 if [ -z "$CustomBuild" ];then

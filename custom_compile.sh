@@ -6,7 +6,7 @@ opticks-
 opticks-info
 #opticks-externals
 
-echo "===\nInstall Oticks Externals\n==="
+echo -e "================================================\n== Install Oticks Externals\n================================================"
 # The externals are pretty complicated, so leave this with Opticks for now
 opticks-externals-install
 
@@ -14,7 +14,7 @@ opticks-externals-install
 ### opticks-wipe
 ### opticks-cmake
 
-echo "===\nConfigure Oticks\n==="
+echo -e "================================================\n== Configure Oticks\n================================================"
 # opticks-cmake () { 
 (
 bdir=$(opticks-bdir)
@@ -28,22 +28,30 @@ cmake -G "$(opticks-cmake-generator)"\
       -DCOMPUTE_CAPABILITY=$(opticks-compute-capability)\
       -DCMAKE_INSTALL_PREFIX=$(opticks-prefix)\
       -DOptiX_INSTALL_DIR=$(opticks-optix-install-dir)\
-      -DGeant4_DIR=$(g4-cmake-dir)\
+      -DCMAKE_PREFIX_PATH=$(g4-prefix)\
       -DXERCESC_LIBRARY=$(xercesc-library)\
       -DXERCESC_INCLUDE_DIR=$(xercesc-include-dir)\
       $* $(opticks-sdir)
 )
 
-echo "===\nBuild Oticks\n==="
+echo -e "================================================\n== Build Oticks\n================================================"
 
 ## opticks--
 #opticks-- () { 
 (
     cd $(opticks-bdir);
     cmake --build . --config $(opticks-config-type) --target install -- -j8
+
+ # QUICK FIX: Run twice, it seems to solve a compile problem... WIERD!!!
+    cmake --build . --config $(opticks-config-type) --target install -- -j8
 )
 
-echo "===\nPrepare install cache\n==="
+echo -e "================================================\n== Prepare install cache\n================================================"
+
+(
+g4-
+g4-export-ini
+)
 
 ##opticks-prepare-installcache
 #opticks-prepare-installcache () {   

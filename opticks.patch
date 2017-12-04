@@ -1,6 +1,27 @@
-diff -r b8173314c622 cmake/Modules/EnvCompilationFlags.cmake
---- a/cmake/Modules/EnvCompilationFlags.cmake	Sun Nov 26 21:57:31 2017 +0800
-+++ b/cmake/Modules/EnvCompilationFlags.cmake	Sun Nov 26 17:00:12 2017 +0000
+diff -r 4937eaae65b3 CMakeLists.txt
+--- a/CMakeLists.txt	Mon Nov 27 21:08:53 2017 +0800
++++ b/CMakeLists.txt	Mon Nov 27 14:04:07 2017 +0000
+@@ -9,7 +9,7 @@
+ set(name Opticks)
+ project(${name})
+ 
+-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules") 
++set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake/Modules") 
+ set(OptiX_INSTALL_DIR "/tmp"             CACHE PATH   "Path to OptiX installed location.")
+ set(COMPUTE_CAPABILITY "0"               CACHE STRING "GPU Compute Capability eg one of 0,30,50,52 " )
+ 
+@@ -101,7 +101,7 @@
+ if(REST)
+    add_subdirectory(ok)
+ 
+-   find_package(Geant4 QUIET)
++   find_package(Geant4)
+    if(Geant4_FOUND)
+       add_subdirectory(cfg4)
+       add_subdirectory(okg4)
+diff -r 4937eaae65b3 cmake/Modules/EnvCompilationFlags.cmake
+--- a/cmake/Modules/EnvCompilationFlags.cmake	Mon Nov 27 21:08:53 2017 +0800
++++ b/cmake/Modules/EnvCompilationFlags.cmake	Mon Nov 27 14:04:07 2017 +0000
 @@ -24,8 +24,8 @@
    else ()
        #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
@@ -12,20 +33,9 @@ diff -r b8173314c622 cmake/Modules/EnvCompilationFlags.cmake
       set(CMAKE_CXX_STANDARD_REQUIRED on)
  
    endif ()
-diff -r b8173314c622 cmake/Modules/FindOptiX.cmake
---- a/cmake/Modules/FindOptiX.cmake	Sun Nov 26 21:57:31 2017 +0800
-+++ b/cmake/Modules/FindOptiX.cmake	Sun Nov 26 17:00:12 2017 +0000
-@@ -23,6 +23,7 @@
- 
- # Our initial guess will be within the SDK.
- set(OptiX_INSTALL_DIR "${CMAKE_SOURCE_DIR}/../" CACHE PATH "Path to OptiX installed location.")
-+message("BEK ${OptiX_INSTALL_DIR}")
- 
- # The distribution contains both 32 and 64 bit libraries.  Adjust the library
- # search path based on the bit-ness of the build.  (i.e. 64: bin64, lib64; 32:
-diff -r b8173314c622 externals/g4.bash
---- a/externals/g4.bash	Sun Nov 26 21:57:31 2017 +0800
-+++ b/externals/g4.bash	Sun Nov 26 17:00:12 2017 +0000
+diff -r 4937eaae65b3 externals/g4.bash
+--- a/externals/g4.bash	Mon Nov 27 21:08:53 2017 +0800
++++ b/externals/g4.bash	Mon Nov 27 14:04:07 2017 +0000
 @@ -175,12 +175,16 @@
  #g4-prefix(){  echo $(opticks-prefix)/externals ; }
  
@@ -43,9 +53,9 @@ diff -r b8173314c622 externals/g4.bash
   }
  
  g4-libsuffix(){ 
-diff -r b8173314c622 externals/optix.bash
---- a/externals/optix.bash	Sun Nov 26 21:57:31 2017 +0800
-+++ b/externals/optix.bash	Sun Nov 26 17:00:12 2017 +0000
+diff -r 4937eaae65b3 externals/optix.bash
+--- a/externals/optix.bash	Mon Nov 27 21:08:53 2017 +0800
++++ b/externals/optix.bash	Mon Nov 27 14:04:07 2017 +0000
 @@ -3379,6 +3379,9 @@
  }
  
@@ -64,9 +74,9 @@ diff -r b8173314c622 externals/optix.bash
  }
  optix-prefix(){      echo $(optix-fold)/OptiX ; }
  optix-dir(){         echo $(optix-fold)/OptiX/SDK ; }
-diff -r b8173314c622 opticks.bash
---- a/opticks.bash	Sun Nov 26 21:57:31 2017 +0800
-+++ b/opticks.bash	Sun Nov 26 17:00:12 2017 +0000
+diff -r 4937eaae65b3 opticks.bash
+--- a/opticks.bash	Mon Nov 27 21:08:53 2017 +0800
++++ b/opticks.bash	Mon Nov 27 14:04:07 2017 +0000
 @@ -239,22 +239,26 @@
  
  
@@ -114,9 +124,9 @@ diff -r b8173314c622 opticks.bash
  }
  
  opticks-externals(){ cat << EOL
-diff -r b8173314c622 thrustrap/tests/issue628Test.cu
---- a/thrustrap/tests/issue628Test.cu	Sun Nov 26 21:57:31 2017 +0800
-+++ b/thrustrap/tests/issue628Test.cu	Sun Nov 26 17:00:12 2017 +0000
+diff -r 4937eaae65b3 thrustrap/tests/issue628Test.cu
+--- a/thrustrap/tests/issue628Test.cu	Mon Nov 27 21:08:53 2017 +0800
++++ b/thrustrap/tests/issue628Test.cu	Mon Nov 27 14:04:07 2017 +0000
 @@ -4,6 +4,7 @@
  #include <thrust/device_vector.h>
  #include <thrust/reduce.h>
