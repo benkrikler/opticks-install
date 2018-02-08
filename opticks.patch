@@ -1,6 +1,18 @@
-diff -r 659f02f409ac cmake/Modules/EnvCompilationFlags.cmake
---- a/cmake/Modules/EnvCompilationFlags.cmake	Sun Dec 17 16:54:21 2017 +0800
-+++ b/cmake/Modules/EnvCompilationFlags.cmake	Thu Jan 11 18:16:19 2018 +0000
+diff -r 9c7e4e9f827b CMakeLists.txt
+--- a/CMakeLists.txt	Tue Dec 05 13:28:58 2017 +0800
++++ b/CMakeLists.txt	Tue Feb 06 09:49:25 2018 +0000
+@@ -30,6 +30,8 @@
+ if(DUMP)
+    # https://cmake.org/Wiki/CMake_Useful_Variables
+    message("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
++   message("CMAKE_C_COMPILER = ${CMAKE_C_COMPILER}")
++   message("CMAKE_CXX_COMPILER = ${CMAKE_CXX_COMPILER}")
+    message("CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")
+    message("CMAKE_CXX_FLAGS_DEBUG = ${CMAKE_CXX_FLAGS_DEBUG}")
+    message("CMAKE_CXX_FLAGS_RELEASE = ${CMAKE_CXX_FLAGS_RELEASE}")
+diff -r 9c7e4e9f827b cmake/Modules/EnvCompilationFlags.cmake
+--- a/cmake/Modules/EnvCompilationFlags.cmake	Tue Dec 05 13:28:58 2017 +0800
++++ b/cmake/Modules/EnvCompilationFlags.cmake	Tue Feb 06 09:49:25 2018 +0000
 @@ -25,7 +25,7 @@
        #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
        #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++0x")
@@ -10,9 +22,47 @@ diff -r 659f02f409ac cmake/Modules/EnvCompilationFlags.cmake
       set(CMAKE_CXX_STANDARD_REQUIRED on)
  
    endif ()
-diff -r 659f02f409ac opticks.bash
---- a/opticks.bash	Sun Dec 17 16:54:21 2017 +0800
-+++ b/opticks.bash	Thu Jan 11 18:16:19 2018 +0000
+diff -r 9c7e4e9f827b externals/xercesc.bash
+--- a/externals/xercesc.bash	Tue Dec 05 13:28:58 2017 +0800
++++ b/externals/xercesc.bash	Tue Feb 06 09:49:25 2018 +0000
+@@ -118,7 +118,11 @@
+ }
+ 
+ xercesc-prefix(){  
+-    echo $(opticks-prefix)/externals
++  if [ -n "$XERCESC_ROOT_DIR" ]; then
++      echo "$XERCESC_ROOT_DIR"
++  else
++      echo $(opticks-prefix)/externals
++  fi
+ }
+ 
+ 
+@@ -130,7 +134,9 @@
+ 
+ xercesc-library(){  
+ 
+-  if [ "$NODE_TAG" == "MGB" ]; then
++  if [ -n "$XERCESC_LIBRARY" ]; then
++      echo "$XERCESC_LIBRARY"
++  elif [ "$NODE_TAG" == "MGB" ]; then
+       ome-
+       ome-xercesc-lib
+   elif [ "$NODE_TAG" == "X" ]; then
+@@ -145,7 +151,9 @@
+ }
+ 
+ xercesc-include-dir(){ 
+-  if [ "$NODE_TAG" == "MGB" ]; then
++  if [ -n "$XERCESC_INCLUDE_DIR" ]; then
++      echo "$XERCESC_INCLUDE_DIR"
++  elif [ "$NODE_TAG" == "MGB" ]; then
+       ome-
+       ome-xercesc-include
+   else
+diff -r 9c7e4e9f827b opticks.bash
+--- a/opticks.bash	Tue Dec 05 13:28:58 2017 +0800
++++ b/opticks.bash	Tue Feb 06 09:49:25 2018 +0000
 @@ -375,7 +375,7 @@
  } 
  

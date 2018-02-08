@@ -29,6 +29,8 @@ cmake -G "$(opticks-cmake-generator)"\
       -DCMAKE_INSTALL_PREFIX=$(opticks-prefix)\
       -DOptiX_INSTALL_DIR=$(opticks-optix-install-dir)\
       -DCMAKE_PREFIX_PATH=$(g4-prefix)\
+      -DCMAKE_CXX_COMPILER=$(which g++)\
+      -DCMAKE_C_COMPILER=$(which gcc)\
       -DXERCESC_LIBRARY=$(xercesc-library)\
       -DXERCESC_INCLUDE_DIR=$(xercesc-include-dir)\
       $* $(opticks-sdir)
@@ -40,6 +42,7 @@ echo -e "================================================\n== Build Oticks\n====
 #opticks-- () { 
 (
     cd $(opticks-bdir);
+    pwd
     cmake --build . --config $(opticks-config-type) --target install -- -j8
 
  # QUICK FIX: Run twice, it seems to solve a compile problem... WIERD!!!
