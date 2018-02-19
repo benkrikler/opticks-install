@@ -1,6 +1,6 @@
 diff -r 659f02f409ac CMakeLists.txt
 --- a/CMakeLists.txt	Sun Dec 17 16:54:21 2017 +0800
-+++ b/CMakeLists.txt	Thu Feb 08 18:33:07 2018 +0000
++++ b/CMakeLists.txt	Mon Feb 19 17:27:19 2018 +0000
 @@ -30,6 +30,8 @@
  if(DUMP)
     # https://cmake.org/Wiki/CMake_Useful_Variables
@@ -10,9 +10,27 @@ diff -r 659f02f409ac CMakeLists.txt
     message("CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")
     message("CMAKE_CXX_FLAGS_DEBUG = ${CMAKE_CXX_FLAGS_DEBUG}")
     message("CMAKE_CXX_FLAGS_RELEASE = ${CMAKE_CXX_FLAGS_RELEASE}")
+diff -r 659f02f409ac analytic/gdml.py
+--- a/analytic/gdml.py	Sun Dec 17 16:54:21 2017 +0800
++++ b/analytic/gdml.py	Mon Feb 19 17:27:19 2018 +0000
+@@ -623,12 +623,12 @@
+     def as_ncsg(self):
+         assert self.lunit == 'mm' 
+         cn = CSG("trapezoid", name=self.name)
+-        planes, verts, bbox, meta = make_trapezoid(z=self.z, x1=self.x1, y1=self.y1, x2=self.x2, y2=self.y2 )
++        planes, verts, bbox, _csg = make_trapezoid(z=self.z, x1=self.x1, y1=self.y1, x2=self.x2, y2=self.y2 )
+         cn.planes = planes
+         cn.param2[:3] = bbox[0]
+         cn.param3[:3] = bbox[1]
+ 
+-        cn.meta.update(meta)
++        cn.meta.update(_csg.srcmeta)
+ 
+         return cn
+ 
 diff -r 659f02f409ac cfg4/OpNovicePhysicsList.cc
 --- a/cfg4/OpNovicePhysicsList.cc	Sun Dec 17 16:54:21 2017 +0800
-+++ b/cfg4/OpNovicePhysicsList.cc	Thu Feb 08 18:33:07 2018 +0000
++++ b/cfg4/OpNovicePhysicsList.cc	Mon Feb 19 17:27:19 2018 +0000
 @@ -63,6 +63,7 @@
  #include "Scintillation.hh"
  #include "Cerenkov.hh"
@@ -129,7 +147,7 @@ diff -r 659f02f409ac cfg4/OpNovicePhysicsList.cc
  
 diff -r 659f02f409ac cmake/Modules/EnvCompilationFlags.cmake
 --- a/cmake/Modules/EnvCompilationFlags.cmake	Sun Dec 17 16:54:21 2017 +0800
-+++ b/cmake/Modules/EnvCompilationFlags.cmake	Thu Feb 08 18:33:07 2018 +0000
++++ b/cmake/Modules/EnvCompilationFlags.cmake	Mon Feb 19 17:27:19 2018 +0000
 @@ -25,7 +25,7 @@
        #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
        #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++0x")
@@ -141,7 +159,7 @@ diff -r 659f02f409ac cmake/Modules/EnvCompilationFlags.cmake
    endif ()
 diff -r 659f02f409ac externals/xercesc.bash
 --- a/externals/xercesc.bash	Sun Dec 17 16:54:21 2017 +0800
-+++ b/externals/xercesc.bash	Thu Feb 08 18:33:07 2018 +0000
++++ b/externals/xercesc.bash	Mon Feb 19 17:27:19 2018 +0000
 @@ -118,7 +118,11 @@
  }
  
@@ -179,7 +197,7 @@ diff -r 659f02f409ac externals/xercesc.bash
    else
 diff -r 659f02f409ac opticks.bash
 --- a/opticks.bash	Sun Dec 17 16:54:21 2017 +0800
-+++ b/opticks.bash	Thu Feb 08 18:33:07 2018 +0000
++++ b/opticks.bash	Mon Feb 19 17:27:19 2018 +0000
 @@ -375,7 +375,7 @@
  } 
  
