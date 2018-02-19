@@ -1,5 +1,6 @@
 #! /bin/bash
 source $1
+set -x
 
 opticks-
 

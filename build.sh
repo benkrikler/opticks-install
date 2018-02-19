@@ -2,7 +2,7 @@
 #set -x
 
 ### Config
-PackagesToInstall=( zip unzip doxygen libX11-devel libGL-devel libXrandr-devel libXinerama-devel libXcursor-devel mesa-libGLU-devel openssl-devel xerces-c-devel tkinter )
+PackagesToInstall=( zip unzip doxygen libX11-devel libGL-devel libXrandr-devel libXinerama-devel libXcursor-devel mesa-libGLU-devel openssl-devel xerces-c-devel tkinter mesa-dri-drivers mesa-libGLES mesa-libGL-devel mesa-libGLw mesa-libGLw-devel libXi-devel freeglut-devel freeglut )
 PythonPackagesToAdd=( lxml matplotlib )
 WorkPackages=( patch )
 
@@ -20,6 +20,7 @@ OptixHome=/opt/NVIDIA-OptiX-SDK-4.1.1-linux64/
 #### Run things
 
 yum -y install "${WorkPackages[@]}" ${PackagesToInstall[@]}
+pip install ${PythonPackagesToAdd[@]}
 # yum remove -y xerces-c xerces-c-devel
 # Custom install cmake 3.10:
 #bash /work/cmake-3.10.1-Linux-x86_64.sh --prefix=/usr --skip-license
@@ -75,3 +76,8 @@ if [ -z "$CustomBuild" ];then
 else
 	"$CustomBuild" "$ProfileFile"
 fi
+
+echo -e "================================================\n== Run Opticks Tests\n================================================"
+opticks-
+op -G
+opticks-t -V
