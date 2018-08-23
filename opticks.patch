@@ -14,3 +14,15 @@ diff -r 90440909355b cmake/Modules/FindOptiX.cmake
  macro(OPTIX_find_api_library name version)
    find_library(${name}_LIBRARY
      NAMES ${name}.${version} ${name}
+diff -r 90440909355b externals/glfw.bash
+--- a/externals/glfw.bash	Thu Aug 16 14:39:27 2018 +0800
++++ b/externals/glfw.bash	Thu Aug 23 16:56:49 2018 +0000
+@@ -293,7 +293,7 @@
+    mv glfw3.pc GLFW3.pc
+ }
+ 
+-glfw-version(){ echo 3.1.1 ; }
++glfw-version(){ echo 3.2.1 ; }
+ glfw-name(){ echo glfw-$(glfw-version) ; }
+ glfw-url(){  echo http://downloads.sourceforge.net/project/glfw/glfw/$(glfw-version)/$(glfw-name).zip ; }
+ glfw-dist(){ echo $(dirname $(glfw-dir))/$(basename $(glfw-url)) ; }
