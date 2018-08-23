@@ -1,0 +1,84 @@
+FROM nvidia/cuda:9.2-cudnn7-devel-centos7
+# FROM nvidia/cuda:8.0-cudnn6-devel-centos7
+
+#COPY NVIDIA-OptiX-SDK-4.1.1-linux64-22553582.sh /tmp/NVIDIA-OptiX-SDK-4.1.1-linux64-22553582.sh
+ENV OptixInstall NVIDIA-OptiX-SDK-5.1.0-linux64
+COPY ${OptixInstall}*sh /tmp/
+RUN yes | bash /tmp/${OptixInstall}*sh --prefix=/opt \
+    && ln -s /opt/${OptixInstall} /opt/Optix
+
+RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+  && yum install -y \
+      automake  boost  boost-devel  cmake  doxygen  expat-devel  gcc  gcc-c++  git  \
+      libGL-devel  libX11-devel  libXcursor-devel  libXinerama-devel  libXrandr-devel  mesa-libGLU-devel  \
+      make  mercurial  openssl-devel  patch  python-devel  python-pip  unzip  vim  wget  xerces-c-devel  zip  \
+      tkinter mesa-dri-drivers mesa-libGLES mesa-libGLw mesa-libGLw-devel libXi-devel freeglut-devel freeglut \
+  && yum install -y xclock \
+  && yum clean all \
+  && pip install -U pip && pip install -U --force-reinstall numpy pycuda lxml matplotlib \
+  && echo '"\e[A": history-search-backward' >> /etc/inputrc \
+  && echo '"\e[B":history-search-forward' >> /etc/inputrc
+
+RUN mkdir -p /tmp/cmake && \
+    cd /tmp/cmake && \
+    wget https://cmake.org/files/v3.12/cmake-3.12.1-Linux-x86_64.sh && \
+    bash cmake-3.12.1-Linux-x86_64.sh --prefix=/usr --skip-license && \
+    rm -fr /tmp/cmake
+
+ENV opticks_home /opt/opticks_stuff
+WORKDIR ${opticks_home}
+RUN hg clone http://bitbucket.org/simoncblyth/opticks -r 90440909355b2c1d3bcee0b10dd30078863980f3
+#RUN hg clone http://bitbucket.org/simoncblyth/opticks -r 16bb221cf21b10bc098bc6c1a73a6ddfbec92ef0
+
+COPY ./profile.sh ./opticks.patch ${opticks_home}/
+
+ENV OptiX_INSTALL_DIR /opt/${OptixInstall}
+ENV CMAKE_BUILD_PARALLEL_LEVEL 8
+
+RUN mkdir -p ${opticks_home}/logs/ && \
+    cd opticks && \
+    patch -N -p 1 < ${opticks_home}/opticks.patch \
+    2>&1 | tee ${opticks_home}/logs/patch_opticks.log
+
+RUN ["/bin/bash", "-c", "( \
+    source ${opticks_home}/profile.sh \
+    && opticks- \
+    && opticks-info \
+    && opticks-externals-install \
+    ) 2>&1| tee ${opticks_home}/logs/install_externals.log  \
+    "]
+
+# The following is what was done for previous versions
+# RUN [ "/bin/bash", "-c", " ( \
+#     echo opticks_home = ${opticks_home} \
+#     && echo shell=$SHELL \
+#     && echo XERCESC_ROOT_DIR=$XERCESC_ROOT_DIR \
+#     && ls -l ${opticks_home}  \
+#     && source ${opticks_home}/profile.sh \
+#     && opticks- \
+#     && mkdir -p $(opticks-bdir) \
+#     && opticks-bcd \
+#     && g4- \
+#     && xercesc- \
+#     && opticks-cmake-info \
+#     && cmake -G \"$(opticks-cmake-generator)\" -DCMAKE_BUILD_TYPE=Debug -DCOMPUTE_CAPABILITY=$(opticks-compute-capability) -DCMAKE_INSTALL_PREFIX=$(opticks-prefix) -DOptiX_INSTALL_DIR=$(opticks-optix-install-dir) -DCMAKE_PREFIX_PATH=$(g4-prefix) -DCMAKE_CXX_COMPILER=$(which g++) -DCMAKE_C_COMPILER=$(which gcc) -DXERCESC_LIBRARY=$(xercesc-library) -DXERCESC_INCLUDE_DIR=$(xercesc-include-dir) $(opticks-sdir) \
+#     ) 2>&1 | tee ${opticks_home}/logs/configure_opticks.log  \
+#      " ]
+
+RUN ["/bin/bash", "-c", "( \
+    source ${opticks_home}/profile.sh \
+    && opticks- \
+    && om- \
+    && mkdir -p $(om-bdir) \
+    && cd $(om-home) \
+    && om-install \
+    ) 2>&1 | tee ${opticks_home}/logs/install_opticks.log  \
+    "]
+
+#RUN ["/bin/bash", "-c", "( \
+#    source ${opticks_home}/profile.sh \
+#    && opticks- \
+#    && cudarap- \
+#    && cudarap-prepare-installcache \
+#    && OpticksPrepareInstallCache_OKC \
+#    )"]
