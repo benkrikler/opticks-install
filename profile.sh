@@ -18,4 +18,5 @@ export IDPATH=/usr/local/opticks/opticksdata/export/DayaBay_VGDX_20140414-1300/g
 opticks-setup(){
 opticks-prepare-installcache
 op.sh -G
+op.sh --gdml2gltf
 }

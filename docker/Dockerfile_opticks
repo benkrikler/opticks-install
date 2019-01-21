@@ -2,12 +2,18 @@ FROM nvidia/cuda:9.2-cudnn7-devel-centos7
 # FROM nvidia/cuda:8.0-cudnn6-devel-centos7
 
 #COPY NVIDIA-OptiX-SDK-4.1.1-linux64-22553582.sh /tmp/NVIDIA-OptiX-SDK-4.1.1-linux64-22553582.sh
-ENV OptixInstall NVIDIA-OptiX-SDK-5.1.0-linux64
+#ENV OptixInstall NVIDIA-OptiX-SDK-5.1.0-linux64
+ENV OptixInstall NVIDIA-OptiX-SDK-5.1.1-linux64
 COPY ${OptixInstall}*sh /tmp/
 RUN yes | bash /tmp/${OptixInstall}*sh --prefix=/opt \
     && ln -s /opt/${OptixInstall} /opt/Optix
 
-RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+#RUN yum install -y epel-release
+RUN yum install -y "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+#RUN curl -O "http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm" \
+#  && rpm -ivh epel-release-latest-7.noarch.rpm
+
+Run yum repolist \
   && yum install -y \
       automake  boost  boost-devel  cmake  doxygen  expat-devel  gcc  gcc-c++  git  \
       libGL-devel  libX11-devel  libXcursor-devel  libXinerama-devel  libXrandr-devel  mesa-libGLU-devel  \
@@ -27,7 +33,10 @@ RUN mkdir -p /tmp/cmake && \
 
 ENV opticks_home /opt/opticks_stuff
 WORKDIR ${opticks_home}
-RUN hg clone http://bitbucket.org/simoncblyth/opticks -r 90440909355b2c1d3bcee0b10dd30078863980f3
+#  2018-12-19
+RUN hg clone http://bitbucket.org/simoncblyth/opticks -r 592b48970ac5b999134347779c46ef054fd0b2fe
+##  2018-08-16
+#RUN hg clone http://bitbucket.org/simoncblyth/opticks -r 90440909355b2c1d3bcee0b10dd30078863980f3 
 #RUN hg clone http://bitbucket.org/simoncblyth/opticks -r 16bb221cf21b10bc098bc6c1a73a6ddfbec92ef0
 
 COPY ./profile.sh ./opticks.patch ${opticks_home}/
